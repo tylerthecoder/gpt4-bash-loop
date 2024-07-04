@@ -1,18 +1,24 @@
-import openai
+from openai import OpenAI
 import os
 import json
 from termcolor import colored
 
-openai.api_key = os.getenv("OPENAI_API_KEY")
+client = OpenAI()
 
-SYSTEM_PROMPT = '''
+if "OPENAI_API_KEY" not in os.environ:
+    print("Please set the OPENAI_API_KEY environment variable.")
+    exit(1)
+
+client.api_key = str(os.getenv("OPENAI_API_KEY"))
+
+
+SYSTEM_PROMPT = """
 You are a helpful assistant that runs on my locally computer.
-You can run bash commands for me. Here is some useful information:
-~/docs is where I store all of my documents
-'''
+You can run bash commands for me. 
+"""
 
 TOOLS = [
-	{
+    {
         "type": "function",
         "function": {
             "name": "run_bash_command",
@@ -27,18 +33,22 @@ TOOLS = [
                 },
                 "required": ["command"],
             },
-        }
+        },
     }
 ]
 
+
 def run_bash_command(command):
     print("Do you want to run this command? (y/n)")
-    print(command)
+    print(colored(command, "red"))
     user_input = input()
-    if user_input.lower() != 'y':
+    if user_input.lower() != "y":
         return "Command not run"
     output = os.popen(command).read()
-    print("Command output: ", output)
+    print("Command output:")
+    print("=====================================")
+    print(output)
+    print("=====================================")
     return output
 
 
@@ -51,11 +61,8 @@ def add_user_message(prompt, messages):
 
 
 def chat(messages):
-    response = openai.chat.completions.create(
-        model="gpt-4o",
-        messages=messages,
-        tool_choice='auto',
-        tools=TOOLS
+    response = client.chat.completions.create(
+        model="gpt-4o", messages=messages, tool_choice="auto", tools=TOOLS
     )
 
     message = response.choices[0].message
@@ -71,14 +78,19 @@ def chat(messages):
         func = tool_call.function
         if func.name == "run_bash_command":
             data = json.loads(func.arguments)
-            command = data.get('command')
+            command = data.get("command")
             command_output = run_bash_command(command)
 
             messages += [
-                {"role": "tool", "content": command_output, "tool_call_id": tool_call.id},
+                {
+                    "role": "tool",
+                    "content": command_output,
+                    "tool_call_id": tool_call.id,
+                },
             ]
 
             chat(messages)
+
 
 if __name__ == "__main__":
     messages = [
@@ -86,7 +98,7 @@ if __name__ == "__main__":
     ]
     while True:
         user_input = input("Enter your prompt: ")
-        if user_input.lower() == 'exit':
+        if user_input.lower() == "exit":
             break
         add_user_message(user_input, messages)
         chat(messages)
