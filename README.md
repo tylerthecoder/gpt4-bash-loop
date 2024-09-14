@@ -5,7 +5,7 @@ My personal ai assistant.
 ## Install
 
 ```bash
-curl https://github.com/tylerthecoder/gpt4-bash-loop/blob/main/install.sh | bash
+curl https://raw.githubusercontent.com/tylerthecoder/gpt4-bash-loop/main/install.sh | bash
 ```
 
 ## Usage
