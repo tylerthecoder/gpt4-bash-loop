@@ -1,0 +1,1 @@
+pyinstaller --onefile --name=jarvis shell.py

@@ -1,1 +1,5 @@
-# gpt4-bash-loop
+# Jarvis
+
+My personal ai assistant.
+
+

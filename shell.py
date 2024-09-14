@@ -14,7 +14,7 @@ client.api_key = str(os.getenv("OPENAI_API_KEY"))
 
 SYSTEM_PROMPT = """
 You are a helpful assistant that runs on my locally computer.
-You can run bash commands for me. 
+You can run bash commands for me.
 """
 
 TOOLS = [
