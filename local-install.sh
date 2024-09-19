@@ -1,0 +1,1 @@
+sudo mv dist/jarvis /usr/local/bin/jarvis
