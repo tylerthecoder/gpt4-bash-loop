@@ -3,7 +3,6 @@ from openai import OpenAI
 import os
 import json
 from termcolor import colored
-from clip import main as clip_main
 
 client = OpenAI()
 
@@ -94,16 +93,13 @@ def chat(messages):
             chat(messages)
 
 
-if __name__ == "__main__":
-    if len(sys.argv) > 1 and sys.argv[1].lower() == "clip":
-        clip_main()
-    else:
-        messages = [
-            {"role": "system", "content": SYSTEM_PROMPT},
-        ]
-        while True:
-            user_input = input("Enter your prompt: ")
-            if user_input.lower() == "exit":
-                break
-            add_user_message(user_input, messages)
-            chat(messages)
+def main():
+    messages = [
+        {"role": "system", "content": SYSTEM_PROMPT},
+    ]
+    while True:
+        user_input = input("Enter your prompt: ")
+        if user_input.lower() == "exit":
+            break
+        add_user_message(user_input, messages)
+        chat(messages)
